@@ -3,18 +3,16 @@ import axios from 'axios'
 import Idea from './Idea'
 import IdeaForm from './IdeaForm'
 import update from 'immutability-helper'
+import Notification from './Notification'
 
 class IdeasContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-<<<<<<< HEAD
-      ideas: []
-=======
       ideas: [],
       editingIdeaId: null,
-      notification: ''
->>>>>>> 232c6e9... Introduce ability to edit idea
+      notification: '',
+      transitionIn: false
     }
   }
 
@@ -38,7 +36,7 @@ class IdeasContainer extends Component {
   updateIdea = (idea) => {
     const ideaIndex = this.state.ideas.findIndex(x => x.id === idea.id)
     const ideas = update(this.state.ideas, {[ideaIndex]: { $set: idea }})
-    this.setState({ideas: ideas, notification: 'All changes saved'})
+    this.setState({ideas: ideas, notification: 'All changes saved', transitionIn: true})
   }
 
   deleteIdea = (id) => {
@@ -51,7 +49,7 @@ class IdeasContainer extends Component {
     .catch(error => console.log(error))
   }
 
-  resetNotification = () => {this.setState({notification: ''})}
+  resetNotification = () => {this.setState({notification: '', transitionIn: false})}
 
   enableEditing = (id) => {
     this.setState({editingIdeaId: id}, () => { this.title.focus() })
@@ -64,9 +62,7 @@ class IdeasContainer extends Component {
           <button className="newIdeaButton" onClick={this.addNewIdea} >
             New Idea
           </button>
-          <span className="notification">
-            {this.state.notification}
-          </span>
+          <Notification in={this.state.transitionIn} notification= {this.state.notification} />
         </div>
         {this.state.ideas.map((idea) => {
           if(this.state.editingIdeaId === idea.id) {
